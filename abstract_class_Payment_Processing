@@ -1,0 +1,106 @@
+package Java_Core;
+
+abstract class Payment {
+    double amount;
+    String payerName;
+    boolean paymentStatus = false;
+
+    Payment(double amount, String payerName) {
+        this.amount = amount;
+        this.payerName = payerName;
+    }
+
+    abstract void processPayment();
+
+    void displayReceipt() {
+        System.out.println("Payer: " + payerName);
+        System.out.println("Amount: Rs." + amount);
+        System.out.println("Payment Status: " + (paymentStatus ? "Completed" : "Pending"));
+    }
+}
+
+class CashPayment extends Payment {
+    CashPayment(double amount, String payerName) {
+        super(amount, payerName);
+    }
+
+    @Override
+    void processPayment() {
+        System.out.println("Cash payment of Rs." + amount + " received.");
+        paymentStatus = true;
+    }
+}
+
+class CardPayment extends Payment {
+    String cardNumber;
+    String bankName;
+
+    CardPayment(double amount, String payerName, String cardNumber, String bankName) {
+        super(amount, payerName);
+        this.cardNumber = cardNumber;
+        this.bankName = bankName;
+    }
+
+    @Override
+    void processPayment() {
+        String last4 = cardNumber.substring(cardNumber.length() - 4);
+        System.out.println("Card payment of Rs." + amount + " received using card ****" + last4 +
+                           " from " + bankName);
+        paymentStatus = true;
+    }
+}
+
+class UPIPayment extends Payment {
+    String upiId;
+
+    UPIPayment(double amount, String payerName, String upiId) {
+        super(amount, payerName);
+        this.upiId = upiId;
+    }
+
+    @Override
+    void processPayment() {
+        System.out.println("Processing UPI payment for " + upiId + "...");
+        System.out.println("UPI payment of Rs." + amount + " successful.");
+        paymentStatus = true;
+    }
+}
+
+class EMIPayment extends Payment {
+    int months;
+
+    EMIPayment(double amount, String payerName, int months) {
+        super(amount, payerName);
+        this.months = months;
+    }
+
+    @Override
+    void processPayment() {
+        double monthly = amount / months;
+        System.out.println("EMI payment of Rs." + amount + " over " + months +
+                           " months. Monthly installment: Rs." + monthly);
+        paymentStatus = true;
+    }
+}
+
+
+
+public class abstract_class_Payment_Processing {
+	
+	public static void main(String[] args) {
+	
+	 Payment[] payments = new Payment[4];
+     payments[0] = new CashPayment(5000, "Alice");
+     payments[1] = new CardPayment(10000, "Bob", "1234567890123456", "HDFC Bank");
+     payments[2] = new UPIPayment(2500, "Charlie", "charlie@upi");
+     payments[3] = new EMIPayment(12000, "David", 12);
+
+     // Loop through array and process payment + display receipt
+     for (Payment p : payments) {
+         p.processPayment();   // Polymorphism: calls correct subclass method
+         p.displayReceipt();
+     }
+ }
+}
+
+
